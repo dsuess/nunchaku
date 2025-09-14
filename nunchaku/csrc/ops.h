@@ -111,6 +111,30 @@ void quantize_w4a4_act_fuse_lora(std::optional<torch::Tensor> input,
                                                    fp4);
 }
 
+void quantize_w4a4_act(std::optional<torch::Tensor> input,
+                       std::optional<torch::Tensor> output,
+                       std::optional<torch::Tensor> oscales,
+                       bool fuse_glu,
+                       bool fp4) {
+    TorchOpContext ctx;
+
+    spdlog::trace("running quantize_w4a4_act: ");
+
+    auto getTensor = [](std::optional<torch::Tensor> &t) {
+        Tensor ret = t.has_value() ? from_torch(t.value()) : Tensor{};
+        if (ret.valid()) {
+            spdlog::trace("  {}", ret.shape.str());
+        } else {
+            spdlog::trace("  <invalid>");
+        }
+        return ret;
+    };
+    nunchaku::kernels::quantize_w4a4_act(getTensor(input),
+                                         getTensor(output),
+                                         getTensor(oscales)
+    );
+}
+
 void attention_fp16(torch::Tensor q, // packed [Batch, Head, TokensQ, HEAD_DIM]
                     torch::Tensor k, // packed [Batch, Head, TokensKV, HEAD_DIM]
                     torch::Tensor v, // packed [Batch, Head, TokensKV, HEAD_DIM]

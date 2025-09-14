@@ -78,4 +78,18 @@ def svdq_quantize_w4a4_act_fuse_lora_cuda(
         lora_act_out = torch.empty(batch_size_pad, rank, dtype=torch.float32, device=input.device)
 
     ops.quantize_w4a4_act_fuse_lora(input, output, oscales, lora_down, lora_act_out, smooth, fuse_glu, fp4)
+
+    # outs = dict(
+    #     input=input,
+    #     output=output,
+    #     oscales=oscales,
+    #     lora_down=lora_down,
+    #     lora_act_out=lora_act_out,
+    #     smooth=smooth,
+    #     fuse_glu=fuse_glu,
+    #     fp4=fp4
+    # )
+    # torch.save(outs, "args_quantize_w4a4_act_fuse_lora.pt")
+    # assert False, "AAAA"
+
     return output, oscales, lora_act_out

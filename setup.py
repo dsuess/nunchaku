@@ -38,6 +38,9 @@ def get_sm_targets() -> list[str]:
     except:
         raise Exception("nvcc not found")
 
+    if os.getenv("NUNCHAKU_SM_TARGETS"):
+        return os.getenv("NUNCHAKU_SM_TARGETS").split(",")
+
     support_sm120 = packaging_version.parse(nvcc_version) >= packaging_version.parse("12.8")
 
     install_mode = os.getenv("NUNCHAKU_INSTALL_MODE", "FAST")
